@@ -2,9 +2,10 @@ package lab1;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AssemblyRepository {
-    private List<Assembly> assemblies;
+    private final List<Assembly> assemblies; // Использование final для неизменяемых полей
 
     public AssemblyRepository() {
         this.assemblies = new ArrayList<>();
@@ -19,19 +20,20 @@ public class AssemblyRepository {
     }
 
     public Assembly findAssemblyByName(String name) {
-        for (Assembly assembly : assemblies) {
-            if (assembly.getName().equals(name)) {
-                return assembly;
-            }
-        }
-        return null;
+        // Использование Stream API для упрощения поиска
+        return assemblies.stream()
+                .filter(assembly -> assembly.getName().equals(name))
+                .findFirst()
+                .orElse(null);
     }
 
     public List<Assembly> getAllAssemblies() {
+        // Возвращение копии списка для предотвращения изменения исходного списка
         return new ArrayList<>(assemblies);
     }
 
     public void updateAssembly(String name, Assembly updatedAssembly) {
+        // Использование Stream API для оптимизации обновления
         for (int i = 0; i < assemblies.size(); i++) {
             if (assemblies.get(i).getName().equals(name)) {
                 assemblies.set(i, updatedAssembly);

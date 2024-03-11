@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class Menu {
-    private AssemblyRepository assemblyRepository;
-    private Scanner scanner;
+    private final AssemblyRepository assemblyRepository; // Использование final
+    private final Scanner scanner; // Использование final
 
     public Menu() {
         assemblyRepository = new AssemblyRepository();
@@ -26,32 +26,22 @@ public class Menu {
             System.out.println("6. Выйти из программы");
             System.out.print("Выберите действие: ");
             choice = scanner.nextInt();
-            scanner.nextLine();
-            switch (choice) {
-                case 1:
-                    addAssembly();
-                    break;
-                case 2:
-                    deleteAssembly();
-                    break;
-                case 3:
-                    displayAssemblies();
-                    break;
-                case 4:
-                    calculateTotalWeightByForm();
-                    break;
-                case 5:
-                    displayTotalAssemblyCount();
-                    break;
-                case 6:
-                    System.out.println("Выход из программы...");
-                    break;
-                default:
-                    System.out.println("Неверный выбор. Повторите попытку.");
-            }
+            scanner.nextLine(); // Очистка буфера
+            handleChoice(choice);
         } while (choice != 6);
     }
 
+    private void handleChoice(int choice) {
+        switch (choice) {
+            case 1 -> addAssembly();
+            case 2 -> deleteAssembly();
+            case 3 -> displayAssemblies();
+            case 4 -> calculateTotalWeightByForm();
+            case 5 -> displayTotalAssemblyCount();
+            case 6 -> System.out.println("Выход из программы...");
+            default -> System.out.println("Неверный выбор. Повторите попытку.");
+        }
+    }
     private void addAssembly() {
         System.out.print("Введите имя сборки: ");
         String name = scanner.nextLine();
