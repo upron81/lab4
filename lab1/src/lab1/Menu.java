@@ -13,7 +13,7 @@ public class Menu {
     public Menu() {
         assemblies = new ArrayList<>();
         scanner = new Scanner(System.in);
-        initializeAssemblies(); // Инициализация списка сборок при создании объекта меню
+        initializeAssemblies();
     }
 
     public void displayMenu() {
@@ -29,7 +29,7 @@ public class Menu {
             System.out.println("7. Выйти из программы");
             System.out.print("Выберите действие: ");
             choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+            scanner.nextLine();
             switch (choice) {
                 case 1:
                     addAssembly();
@@ -127,8 +127,6 @@ public class Menu {
     }
 
     private void displayDistinctAssembly() {
-        // Предположим, что у нас есть метод для вывода сборки, отличающейся своим именем
-        // или просто выведем первую сборку из списка
         if (!assemblies.isEmpty()) {
             Assembly distinctAssembly = assemblies.get(0);
             System.out.println("Сборка с отличающимся именем: " + distinctAssembly.getName());
