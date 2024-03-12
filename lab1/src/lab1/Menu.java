@@ -1,19 +1,17 @@
 package lab1;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
 public class Menu {
-    private List<Assembly> assemblies;
-    private Scanner scanner;
+    private final AssemblyRepository assemblyRepository; // Использование final
+    private final Scanner scanner; // Использование final
 
     public Menu() {
-        assemblies = new ArrayList<>();
+        assemblyRepository = new AssemblyRepository();
         scanner = new Scanner(System.in);
-        initializeAssemblies(); // Инициализация списка сборок при создании объекта меню
+        initializeAssemblies();
     }
 
     public void displayMenu() {
@@ -24,58 +22,41 @@ public class Menu {
             System.out.println("2. Удалить сборку");
             System.out.println("3. Вывести список сборок");
             System.out.println("4. Подсчитать общий вес деталей с одинаковой формой");
-            System.out.println("5. Вывести количество деталей");
-            System.out.println("6. Вывести деталь, которая отличается своей формой");
-            System.out.println("7. Выйти из программы");
+            System.out.println("5. Вывести количество сборок");
+            System.out.println("6. Выйти из программы");
             System.out.print("Выберите действие: ");
             choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
-            switch (choice) {
-                case 1:
-                    addAssembly();
-                    break;
-                case 2:
-                    deleteAssembly();
-                    break;
-                case 3:
-                    displayAssemblies();
-                    break;
-                case 4:
-                    calculateTotalWeightByForm();
-                    break;
-                case 5:
-                    displayTotalAssemblyCount();
-                    break;
-                case 6:
-                    displayDistinctAssembly();
-                    break;
-                case 7:
-                    System.out.println("Выход из программы...");
-                    break;
-                default:
-                    System.out.println("Неверный выбор. Повторите попытку.");
-            }
-        } while (choice != 7);
+            scanner.nextLine(); // Очистка буфера
+            handleChoice(choice);
+        } while (choice != 6);
     }
 
+    private void handleChoice(int choice) {
+        switch (choice) {
+            case 1 -> addAssembly();
+            case 2 -> deleteAssembly();
+            case 3 -> displayAssemblies();
+            case 4 -> calculateTotalWeightByForm();
+            case 5 -> displayTotalAssemblyCount();
+            case 6 -> System.out.println("Выход из программы...");
+            default -> System.out.println("Неверный выбор. Повторите попытку.");
+        }
+    }
     private void addAssembly() {
         System.out.print("Введите имя сборки: ");
         String name = scanner.nextLine();
         Assembly assembly = new Assembly(name);
-        assemblies.add(assembly);
+        assemblyRepository.addAssembly(assembly);
         System.out.println("Сборка добавлена.");
     }
 
     private void deleteAssembly() {
-        if (assemblies.isEmpty()) {
-            System.out.println("Список сборок пуст.");
-            return;
-        }
         System.out.println("Выберите номер сборки для удаления (начиная с 1): ");
         displayAssemblies();
         int index = scanner.nextInt();
-        if (index > 0 && index <= assemblies.size()) {
-            assemblies.remove(index - 1);
+        if (index > 0 && index <= assemblyRepository.getAllAssemblies().size()) {
+            Assembly toDelete = assemblyRepository.getAllAssemblies().get(index - 1);
+            assemblyRepository.deleteAssembly(toDelete.getName());
             System.out.println("Сборка удалена.");
         } else {
             System.out.println("Некорректный номер сборки.");
@@ -83,6 +64,7 @@ public class Menu {
     }
 
     private void displayAssemblies() {
+        var assemblies = assemblyRepository.getAllAssemblies();
         if (assemblies.isEmpty()) {
             System.out.println("Список сборок пуст.");
             return;
@@ -93,16 +75,9 @@ public class Menu {
         }
     }
 
-    private void initializeAssemblies() {
-        assemblies.add(new Assembly("1"));
-        assemblies.add(new Assembly("2"));
-        assemblies.add(new Assembly("3"));
-        // Добавьте остальные сборки сюда
-    }
-
     private void calculateTotalWeightByForm() {
         Map<String, Double> totalWeights = new HashMap<>();
-        for (Assembly assembly : assemblies) {
+        for (Assembly assembly : assemblyRepository.getAllAssemblies()) {
             Bolt bolt = assembly.getBolt();
             Gear gear = assembly.getGear();
 
@@ -119,21 +94,13 @@ public class Menu {
         }
     }
 
-
-
-
     private void displayTotalAssemblyCount() {
-        System.out.println("Общее количество сборок: " + assemblies.size());
+        System.out.println("Общее количество сборок: " + assemblyRepository.getAllAssemblies().size());
     }
 
-    private void displayDistinctAssembly() {
-        // Предположим, что у нас есть метод для вывода сборки, отличающейся своим именем
-        // или просто выведем первую сборку из списка
-        if (!assemblies.isEmpty()) {
-            Assembly distinctAssembly = assemblies.get(0);
-            System.out.println("Сборка с отличающимся именем: " + distinctAssembly.getName());
-        } else {
-            System.out.println("Список сборок пуст.");
-        }
+    private void initializeAssemblies() {
+        assemblyRepository.addAssembly(new Assembly("1"));
+        assemblyRepository.addAssembly(new Assembly("2"));
+        assemblyRepository.addAssembly(new Assembly("3"));
     }
 }
