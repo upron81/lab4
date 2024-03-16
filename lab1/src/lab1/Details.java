@@ -68,14 +68,14 @@ class Gear extends Detail {
 }
 
 class Assembly {
-    private final Bolt bolt;
-    private final Gear gear;
+    private Bolt bolt;
+    private Gear gear;
     private final String name;
 
-    public Assembly(String name) {
+    public Assembly(String name, String boltForm, String boltMaterial, String gearForm, String gearMaterial) {
         this.name = name;
-        this.bolt = new Bolt("Bolt Form", "Steel", 10.0, 15.0);
-        this.gear = new Gear("Gear Form", "Aluminum", 20.0, 25.0);
+        this.bolt = new Bolt(boltForm, boltMaterial, 10.0, 15.0);
+        this.gear = new Gear(gearForm, gearMaterial, 20.0, 25.0);
     }
 
     public Bolt getBolt() {
